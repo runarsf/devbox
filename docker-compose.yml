@@ -1,16 +1,19 @@
 version: "3"
 
 services:
-  dev:
-    container_name: dev
-    hostname: dev
-    image: dev
-    restart: unless-stopped
+  devbox:
+    image: devbox
+    hostname: devbox
+    container_name: devbox
+    restart: "no"
     build:
       context: .
+      dockerfile: Dockerfile
+      args:
+        DOCKER_USER: dev
     environment:
+      TZ: Europe/Oslo
       GIT_PYTHON_REFRESH: quiet
-    #volumes:
-    #- './src:/app'
-    #ports:
-    #- '8080:8080'
+    volumes:
+      - "./mount:/access:ro"
+    command: "tail -f /dev/null"

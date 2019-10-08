@@ -1,6 +1,9 @@
-`docker-compose up -d`
+```shell
+docker-compose up -d && \
+docker exec -it devbox bash
+```
 # or
-```docker
-docker build -t dev . && \
-docker run --rm -it dev bash
+```shell
+docker build -t devbox . && \
+docker run --rm -it devbox bash
 ```
