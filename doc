@@ -1,0 +1,16 @@
+version: "3"
+
+services:
+  dev:
+    container_name: dev
+    hostname: dev
+    image: dev
+    restart: unless-stopped
+    build:
+      context: .
+    environment:
+      GIT_PYTHON_REFRESH: quiet
+    #volumes:
+    #- './src:/app'
+    #ports:
+    #- '8080:8080'
