@@ -2,6 +2,10 @@ FROM ubuntu:18.04
 
 MAINTAINER runarsf <root@runarsf.dev>
 
+ENV DEBIAN_FRONTEND=noninteractive
+
+#ARG UID=1000
+#ARG GID=1000
 ARG DOCKER_USER
 ENV DOCKER_USER $DOCKER_USER
 
@@ -16,19 +20,23 @@ RUN apt-get update \
 USER "$DOCKER_USER"
 WORKDIR "/home/$DOCKER_USER"
 
-RUN yes | sudo unminimize \
- && sudo apt-get update && sudo apt-get install -y --no-install-recommends \
+RUN sudo apt-get update \
+ && sudo apt-get install -y --no-install-recommends \
+    apt-utils \
     git \
     bash-completion \
     curl \
+    openssl \
     openssh-client \
     tmux \
-    apt-utils \
+    vim \
+    docker \
+    docker-compose \
  && sudo rm -rf /var/lib/apt/lists/*
 
 # Set up dotfiles and deploy script
-RUN mkdir /home/$DOCKER_USER/git \
- && git clone https://github.com/runarsf/dotfiles /home/$DOCKER_USER/git/dotfiles \
- && git clone https://github.com/runarsf/deploy /home/$DOCKER_USER/git/dotfiles/deploy \
- && cd /home/$DOCKER_USER/git/dotfiles/deploy \
- && yes N | ./deploy.sh
+#RUN mkdir /home/$DOCKER_USER/git \
+RUN git config --global http.sslVerify false \
+  && git clone https://github.com/runarsf/dotfiles /home/$DOCKER_USER/dotfiles \
+  && git clone https://github.com/runarsf/deploy /home/$DOCKER_USER/deploy \
+  && /home/$DOCKER_USER/deploy/deploy.sh --dotfiles /home/$DOCKER_USER/dotfiles --packages /home/$DOCKER_USER/dotfiles/deploy-minimal.ini
