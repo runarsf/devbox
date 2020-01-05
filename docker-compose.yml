@@ -6,17 +6,16 @@ services:
     hostname: devbox
     container_name: devbox
     restart: "no"
+    ports:
+      - "2222:22"
+    #  - "80:80"
+    #  - "443:443"
     build:
       context: .
-      dockerfile: Dockerfile
       args:
         DOCKER_USER: dev
-    ports:
-      - "80:80"
-      - "443:443"
-    environment:
-      TZ: Europe/Oslo
-      GIT_PYTHON_REFRESH: quiet
+        argssh: "true"
+    #environment:
+    #  TZ: Europe/Oslo
     volumes:
-      - "./mount:/access:ro"
-    command: "tail -f /dev/null"
+      - "./data/mount:/access:ro"
