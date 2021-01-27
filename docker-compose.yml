@@ -1,21 +1,34 @@
 version: "3"
 
+# ssh ${DOCKER_USER}@172.16.128.2
+
 services:
   devbox:
-    image: devbox
-    hostname: devbox
-    container_name: devbox
-    restart: "no"
+    image: "devbox"
+    build:
+      context: .
+      args:
+        DOCKER_USER: "dev"
+    hostname: "devbox"
+    container_name: "devbox"
+    networks:
+      devbox:
+        ipv4_address: "172.16.128.2"
     ports:
       - "2222:22"
     #  - "80:80"
     #  - "443:443"
-    build:
-      context: .
-      args:
-        DOCKER_USER: dev
-        argssh: "true"
-    #environment:
-    #  TZ: Europe/Oslo
+    environment:
+      TZ: "${TZ:-Europe/Oslo}"
     volumes:
       - "./data/mount:/access:ro"
+      - "./ssh:/home/${DOCKER_USER}/.ssh"
+        #- "./docker-bootstrap.sh/docker-bootstrap.sh:ro"
+    privileged: true # Required for /usr/sbin/init
+    restart: "no"
+
+networks:
+  devbox:
+    ipam:
+      config:
+        - subnet: "172.16.128.0/24"
